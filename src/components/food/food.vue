@@ -12,7 +12,7 @@
                     <h1 class="title">{{food.name}}</h1>
                     <div class="detail">
                         <span class="sell-count">月售{{food.sellCount}}份</span>
-                        <span class="rating">好评率{{food.rating}}</span>
+                        <span class="rating">好评率{{food.rating}}%</span>
                     </div>
                     <div class="price">
                         <span class="now">￥{{food.price}}</span>
@@ -33,7 +33,23 @@
                 <split></split>
                 <div class="rating">
                     <h1 class="title">商品评价</h1>
-                    <ratingselect></ratingselect>
+                    <ratingselect @select="selectRating" @toggle="toggleContent" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+                    <div class="rating-wrapper">
+                        <ul v-show="food.ratings && food.ratings.length">
+                            <li v-for="rating in food.ratings" class="rating-item" v-show="needShow(rating.rateType, rating.text)">
+                                <div class="user">
+                                    <span class="name">{{rating.username}}</span>
+                                    <img class="avatar" width="12" height="12" :src="rating.avatar" alt="">
+                                </div>
+                                <div class="time">{{rating.rateTime | formatDate}}</div>
+                                <p class="text">
+                                    <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>
+                                    {{rating.text}}
+                                </p>
+                            </li>
+                        </ul>
+                        <div class="no-rating" v-show="!food.ratings || !food.ratings.legnth"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,9 +59,13 @@
 <script>
   import Vue from 'vue';
   import BScroll from 'better-scroll';
+  // 这里的formatDate带上了花括号，原因是date.js文件中跑出来的是export function formatDate
+  import {formatDate} from 'common/js/date';
   import cartcontrol from 'components/cartcontrol/cartcontrol';
   import split from 'components/split/split';
   import ratingselect from 'components/ratingselect/ratingselect';
+
+  const ALL = 2;
 
   export default {
     props: {
@@ -55,12 +75,21 @@
     },
     data () {
       return {
-        showFlag: false
+        showFlag: false,
+        selectType: ALL,
+        onlyContent: true,
+        desc: {
+          all: '全部',
+          positive: '推荐',
+          negative: '吐槽'
+        }
       }
     },
     methods: {
       show () {
         this.showFlag = true;
+        this.selectType = ALL;
+        this.onlyContent = true;
         this.$nextTick(() => {
           if (!this.scroll) {
             this.scroll = new BScroll(this.$refs.food, {
@@ -83,6 +112,37 @@
       },
       addFood (target) {
         this.$emit('add', target);
+      },
+      needShow (type, text) {
+        if (this.onlyContent && !text) {
+          return false;
+        }
+        // 如果selectType是ALL的话，显示全部
+        if (this.selectType === ALL) {
+          return true;
+        } else {
+          return type === this.selectType;
+        }
+      },
+      selectRating (type) {
+        this.selectType = type;
+        // 重新渲染高度
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+      },
+      toggleContent () {
+        // onlyContent取反
+        this.onlyContent = !this.onlyContent;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
+      }
+    },
+    filters: {
+      formatDate (time) {
+        let date = new Date(time);
+        return formatDate(date, 'yyyy-MM-dd hh:mm');
       }
     },
     components: {
@@ -140,6 +200,7 @@
     }
     .food .food-center .content {
         padding: 18px;
+        position: relative;
     }    
     .food .food-center .content .title {
         line-height: 14px;
@@ -184,7 +245,7 @@
     .food .food-center .buy {
         position: absolute;
         right: 18px;
-        bottom: 18px;
+        bottom: 20px;
         z-index: 10;
         height: 24px;
         line-height: 24px;
@@ -197,7 +258,7 @@
     }
     .food .food-center .buy .fade-enter-active,
     .food .food-center .buy .fade-leave-active {
-        transition: all 2s
+        transition: all 0.2s
     }
     .food .food-center .buy .fade-enter,
     .food .food-center .buy .fade-leave-active {
@@ -218,5 +279,67 @@
         padding: 0 8px;
         font-size: 12px;
         color: rgb(77,85,93);
+    }    
+    .food .food-center .rating {
+        padding-top: 18px;
+    }
+    .food .food-center .rating .title {
+        line-height: 14px;
+        margin-left: 18px;
+        font-size: 14px;
+        color: rgb(7,17,27);
+    }    
+    .food .food-center .rating .rating-wrapper {
+        padding: 0 18px;
+    }
+    .food .food-center .rating .rating-wrapper .rating-item {
+        position: relative;
+        padding: 18px 0;
+        border-bottom: 1px solid #ccc;
+    }        
+    .food .food-center .rating .rating-wrapper .rating-item .user {
+        position: absolute;
+        right: 0;
+        top: 16px;
+        line-height: 12px;
+        font-size: 0;
+    }    
+    .food .food-center .rating .rating-wrapper .rating-item .user .name {
+        display: inline-block;
+        vertical-align: top;
+        font-size: 12px;
+        margin-right: 6px;
+        color: rgb(147,153,159);
+    }    
+    .food .food-center .rating .rating-wrapper .rating-item .user .avtar {
+        border-radius: 50%;
+    }    
+    .food .food-center .rating .rating-wrapper .rating-item .time {
+        margin-bottom: 6px;
+        line-height: 12px;
+        font-size: 12px;
+        color: rgb(147,153,159);
+    }    
+    .food .food-center .rating .rating-wrapper .rating-item .text {
+        line-height: 16px;
+        font-size: 12px;
+        color: rgb(7,17,27);
+    }    
+    .food .food-center .rating .rating-wrapper .rating-item .text .icon-thumb_up,
+    .food .food-center .rating .rating-wrapper .rating-item .text .icon-thumb_down {
+        margin-right: 4px;
+        line-height: 24px;
+        font-size: 12px;
+    }    
+    .food .food-center .rating .rating-wrapper .rating-item .text .icon-thumb_up {
+        color: rgb(0,160,220);
+    }
+    .food .food-center .rating .rating-wrapper .rating-item .text .icon-thumb_down {
+        color: rgb(147,153,159);
+    }    
+    .food .food-center .rating .rating-wrapper .no-rating {
+        padding: 16px 0;
+        font-size: 12px;
+        color: rgb(147,153,159);
     }    
 </style>

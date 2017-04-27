@@ -392,7 +392,7 @@
         position: relative;
         padding: 12px 0;
         box-sizing: border-box;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid rgba(7,17,27,0.1);
     }    
     .shopcart .shopcart-list .list-content .food .name {
         line-height: 24px;

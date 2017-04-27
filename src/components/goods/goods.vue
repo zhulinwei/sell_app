@@ -228,7 +228,7 @@
         font-size: 12px;
         vertical-align: middle;
         text-align: left;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid rgba(7,17,27,0.1);
     }   
     .goods .foods-wrapper {
         flex: 1;
@@ -246,7 +246,7 @@
         display: flex;
         margin: 18px;
         padding-bottom: 18px;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid rgba(7,17,27,0.1);
     }    
     .goods .foods-wrapper .food-item:last-child {
         border-bottom: 0;

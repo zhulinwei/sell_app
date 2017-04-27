@@ -580,3 +580,6 @@
 [0417/002751.126:ERROR:process_reader_win.cc(233)] ReadMemory at 0x5155000 of 45056 bytes failed: 仅完成部分的 ReadProcessMemory 或 WriteProcessMemory 请求。 (0x12B)
 [0417/002751.274:ERROR:crash_report_exception_handler.cc(111)] WriteEverything failed
 [0417/002751.287:ERROR:scoped_process_suspend.cc(38)] NtResumeProcess: 已尝试访问正在退出的过程。  (0xc000010a)
+[0422/235637.163:ERROR:process_info.cc(608)] range at 0xff26d000, size 0x230 fully unreadable
+[0422/235637.163:ERROR:process_info.cc(608)] range at 0xfe709000, size 0x230 fully unreadable
+[0422/235637.178:ERROR:process_info.cc(608)] range at 0xfe70f000, size 0xf84 fully unreadable

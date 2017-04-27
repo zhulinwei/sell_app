@@ -33,6 +33,7 @@
       return {
         seller: {
           id: (() => {
+            // 这里的id指的是每个商家的id
             let queryParam = urlParse();
             return queryParam.id;
           })()
@@ -40,7 +41,7 @@
       };
     },
     created () {
-      this.$http.get('/api/seller').then((response) => {
+      this.$http.get('/api/seller?id=' + this.seller.id).then((response) => {
         response = response.body;
         if (response.errno === ERR_OK) {
           this.seller = Object.assign({}, this.seller, response.data);
@@ -57,17 +58,20 @@
 <style>
   /*vue-loader会自动帮我们解决浏览器中的兼容问题*/
   .tab {
-    display: flex;
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+      display: flex;
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      border-top: 1px solid rgba(7,17,27,0.1);
+      border-bottom: 1px solid rgba(7,17,27,0.1);
   }
 
   .tab .tab-item {
-    flex: 1;
-    font-size: 14px;
-    text-align: center;
+      flex: 1;
+      font-size: 14px;
+      text-align: center;
+  }  
+  .tab .tab-item .active {
+      color: rgb(240,20,20);
   }  
 </style>
