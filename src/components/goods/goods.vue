@@ -271,7 +271,7 @@
     .goods .foods-wrapper .food-item .content .extra {
         margin-bottom: 8px;
         line-height: 10px;
-        font-size: 12px;
+        font-size: 10px;
         color: rgb(147,153,159);
     }    
     .goods .foods-wrapper .food-item .content .extra .count {
@@ -294,6 +294,6 @@
     .goods .foods-wrapper .food-item .content .cartcontrol-wrapper {
         position: absolute;
         right: 0;
-        bottom: 12px;
+        bottom: -8px;
     }
 </style>

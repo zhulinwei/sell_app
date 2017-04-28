@@ -28,7 +28,6 @@ var goods = appData.goods
 var ratings = appData.ratings
 
 var apiRoutes = express.Router()
-console.log(seller)
 
 apiRoutes.get('/seller', function (req, res) {
   res.json({
